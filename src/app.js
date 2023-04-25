@@ -54,5 +54,5 @@ app.use(express.urlencoded()); // parsear a formato de json
 app.use("/", indexRoutes);
 
 app.listen(app.get("port"), () => {
-  console.log(`Server on port ${app.get("port")}`);
+  console.log(`http://localhost:${app.get("port")}`);
 });
