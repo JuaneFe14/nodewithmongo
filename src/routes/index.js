@@ -11,102 +11,132 @@ let users;
 let tasks;
 
 router.get("/", async (req, res) => {
-  if (userAuth) {
-    tasks = await Task.find();
+  try {
+    if (userAuth) {
+      tasks = await Task.find();
 
-    res.render("index", {
-      tasks,
-    });
-  } else {
-    users = await User.find();
-    if (users && users.length > 0) {
-      res.render("login", { users });
+      res.render("index", {
+        tasks,
+      });
     } else {
-      res.render("register", { users });
+      users = await User.find();
+      if (users && users.length > 0) {
+        res.render("login", { users });
+      } else {
+        res.render("register", { users });
+      }
     }
+  } catch (error) {
+    res.status(400).json({ error });
   }
 });
 
 router.post("/login", async (req, res, next) => {
-  let { username, password } = req.body;
-
-  const auth = User.findOne({ username: username, password: password });
-
-  if (auth) {
-    userAuth = true;
-    res.redirect("/");
-  } else {
-    userAuth = false;
-    res.render("register", { users });
+  try {
+    // check if the user exists
+    const user = await User.findOne({ username: req.body.username });
+    if (user) {
+      //check if password matches
+      const result = req.body.password === user.password;
+      if (result) {
+        userAuth = true;
+        res.redirect("/");
+      } else {
+        res.status(400).json({ error: "incorrect password" });
+      }
+    } else {
+      res.render("register");
+    }
+  } catch (error) {
+    res.status(400).json({ error });
   }
 });
 
 router.get("/register", async (req, res, next) => {
-  users = await User.find();
-  res.render("register", { users });
+  try {
+    users = await User.find();
+    res.render("register", { users });
+  } catch (error) {
+    res.status(400).json({ error });
+  }
 });
 
 router.post("/registerUser", async (req, res, next) => {
-  let { name, username, password } = req.body;
-
-  if (name && username && password) {
-    const auth = User.findOne({
-      name: name,
-      username: username,
-    });
-
-    if (!auth) {
+  try {
+    const user = await User.findOne({ username: req.body.username });
+    if (user) {
+      const result = req.body.name === user.name;
+      if (result) {
+        await User.updateOne({ username: username }, req.body);
+      }
+    } else {
       const user = new User(req.body);
       await user.save();
       res.redirect("/");
-    } else {
-      await User.updateOne({ username: username }, req.body);
-      res.redirect("/");
     }
-  } else {
-    console.error(`Re paila`);
+  } catch (error) {
+    res.status(400).json({ error: "No se pudo guardar" });
   }
 });
 
 router.get("/logout", async (req, res, next) => {
-  userAuth = false;
-  res.render("login");
+  try {
+    userAuth = false;
+    res.render("login");
+  } catch (error) {
+    res.status(400).json({ error });
+  }
 });
 
 router.post("/add", async (req, res, next) => {
-  const task = new Task(req.body);
-  await task.save();
-  res.redirect("/");
+  try {
+    const task = new Task(req.body);
+    await task.save();
+    res.redirect("/");
+  } catch (error) {
+    res.status(400).json({ error });
+  }
 });
 
 router.get("/turn/:id", async (req, res, next) => {
-  let { id } = req.params;
-  const task = await Task.findById(id);
-  task.status = !task.status;
-  await task.save();
-  res.redirect("/");
+  try {
+    let { id } = req.params;
+    const task = await Task.findById(id);
+    task.status = !task.status;
+    await task.save();
+    res.redirect("/");
+  } catch (error) {
+    res.status(400).json({ error });
+  }
 });
 
 router.get("/edit/:id", async (req, res, next) => {
-  const task = await Task.findById(req.params.id);
-
-  res.render("edit", { task });
+  try {
+    const task = await Task.findById(req.params.id);
+    res.render("edit", { task });
+  } catch (error) {
+    res.status(400).json({ error });
+  }
 });
 
 router.post("/edit/:id", async (req, res, next) => {
-  const { id } = req.params;
-  await Task.updateOne({ _id: id }, req.body);
-  res.redirect("/");
+  try {
+    const { id } = req.params;
+    await Task.updateOne({ _id: id }, req.body);
+    res.redirect("/");
+  } catch (error) {
+    res.status(400).json({ error });
+  }
 });
 
 router.get("/delete/:id", async (req, res, next) => {
-  let { id } = req.params;
-  await Task.deleteOne({ _id: id });
-  res.redirect("/");
+  try {
+    let { id } = req.params;
+    await Task.deleteOne({ _id: id });
+    res.redirect("/");
+  } catch (error) {
+    res.status(400).json({ error });
+  }
 });
-
-// router.get("/edit", (req, res) => {
-//   res.render("editar");
-// });
 
 module.exports = router;

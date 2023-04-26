@@ -22,7 +22,7 @@ const app = express();
 // Conexi�n a la base de datos de MongoDB
 
 mongoose
-  .connect("mongodb://127.0.0.1:27017/dbtasks")
+  .connect("mongodb://localhost:27017/dbtasks")
   .then((db) => console.log("Database MongoDB - dbtasks connected"))
   .catch((err) => console.log(err));
 
