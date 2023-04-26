@@ -1,0 +1,62 @@
+<%- include('partials/_header'); %>
+
+<div class="container">
+  <div class="row">
+    <div class="col-sm-12 col-md-6">
+      <div class="container mt-5">
+        <h1 class="h3">Please sign up</h1>
+        <p class="lead mt-5">
+          Lorem ipsum dolor, sit amet consectetur adipisicing elit. Ullam eaque
+          facilis optio repellendus ducimus et distinctio qui. Soluta animi quo
+          assumenda velit libero aspernatur inventore facilis voluptate.
+          Ducimus, aspernatur excepturi?
+        </p>
+      </div>
+    </div>
+    <div class="col-sm-12 col-md-6">
+      <form
+        action="/registerUser"
+        method="post"
+        class="text-center mx-auto p-4 mt-5 w-50 border border-light rounded-lg shadow-lg"
+      >
+        <label for="inputName" class="sr-only">Name</label>
+        <input
+          type="text"
+          id="inputName"
+          class="form-control mt-2"
+          name="name"
+          placeholder="Name"
+          required
+          autofocus
+        />
+        <label for="inputUsername" class="sr-only">Username</label>
+        <input
+          type="text"
+          id="inputUsername"
+          class="form-control mt-2"
+          name="username"
+          placeholder="Username"
+          required
+        />
+        <label for="inputPassword" class="sr-only">Password</label>
+        <input
+          type="password"
+          id="inputPassword"
+          class="form-control mt-2"
+          name="password"
+          placeholder="Password"
+          required
+        />
+        <button class="btn btn-lg btn-success w-75 mt-4" type="submit">
+          Sign up
+        </button>
+        <hr />
+        <p class="text-muted mt-3">
+          ¿Ya estas registrad@?
+          <a class="badge" href="/"> Sign in </a>
+        </p>
+      </form>
+    </div>
+  </div>
+</div>
+<% include ('partials/_footer')%>
